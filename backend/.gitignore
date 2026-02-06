@@ -1,0 +1,43 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output
+
+# Sequelize CLI
+config/config.json
+# (Note: we are using src/config/config.js and .sequelizerc, so we keep those but might want to ignore local DB configs if they contain secrets)
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
