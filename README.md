@@ -27,12 +27,17 @@ This project is containerized using Docker and Docker Compose. It includes the b
    docker-compose exec backend npm run migrate
    
    # Run seed (Sync characters from Rick and Morty API)
-   docker-compose exec backend npm run seed
+   docker-compose exec backend npm run seed:prod
    ```
 
 4. **Access the Applications**:
    - **Frontend**: [http://localhost:3100](http://localhost:3100)
    - **Backend (GraphQL Explorer)**: [http://localhost:3000/graphql](http://localhost:3000/graphql)
+
+5. **Stop the containers**:
+   ```bash
+   docker-compose down
+   ```
 
 ## Architecture
 
