@@ -1,29 +1,38 @@
 import { render, fireEvent } from '@testing-library/react';
 import SearchDialog from './SearchDialog';
-import type { CharacterFilters } from '../../types';
+import type { CharacterListState } from '../../types';
 import { describe, it, expect, vi } from 'vitest';
+import '@testing-library/jest-dom';
 
 describe('SearchDialog', () => {
-    const mockFilters: CharacterFilters = { name: '', status: undefined, species: undefined };
+    const mockState: CharacterListState = {
+        filter: { name: '', species: undefined, gender: undefined },
+        view: 'All'
+    };
     const mockOnFilter = vi.fn();
 
     it('renders filter options and calls onFilter when Apply is clicked', () => {
         const { getByText } = render(
             <SearchDialog
                 onFilter={mockOnFilter}
-                currentFilters={mockFilters}
+                currentState={mockState}
             />
         );
 
-        expect(getByText('Character')).toBeInTheDocument();
+        expect(getByText('Filter View')).toBeInTheDocument();
         expect(getByText('Specie')).toBeInTheDocument();
 
         const humanButton = getByText('Human');
         fireEvent.click(humanButton);
 
-        const filterButton = getByText('Filter');
-        fireEvent.click(filterButton);
+        const applyButton = getByText('Apply Filters');
+        fireEvent.click(applyButton);
 
-        expect(mockOnFilter).toHaveBeenCalledWith(expect.objectContaining({ species: 'Human' }));
+        // Check that the function was called with the updated state
+        expect(mockOnFilter).toHaveBeenCalledWith(
+            expect.objectContaining({
+                filter: expect.objectContaining({ species: 'Human' })
+            })
+        );
     });
 });
