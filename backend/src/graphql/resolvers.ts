@@ -1,5 +1,7 @@
 import characterService from '../services/character.service';
 import characterRepository from '../repositories/character.repository';
+import locationRepository from '../repositories/location.repository';
+import episodeRepository from '../repositories/episode.repository';
 
 export const resolvers = {
     Query: {
@@ -8,6 +10,18 @@ export const resolvers = {
         },
         character: async (_: any, { id }: { id: number }) => {
             return characterRepository.findById(id);
+        },
+        locations: async () => {
+            return locationRepository.findAll();
+        },
+        location: async (_: any, { id }: { id: number }) => {
+            return locationRepository.findById(id);
+        },
+        episodes: async () => {
+            return episodeRepository.findAll();
+        },
+        episode: async (_: any, { id }: { id: number }) => {
+            return episodeRepository.findById(id);
         },
     },
     Character: {
