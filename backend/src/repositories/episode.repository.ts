@@ -1,6 +1,9 @@
 import Episode from '../models/episode.model';
 
 export class EpisodeRepository {
+    async findAll(): Promise<Episode[]> {
+        return Episode.findAll();
+    }
     async findOrCreate(data: Partial<Episode>): Promise<Episode> {
         const [episode] = await Episode.findOrCreate({
             where: { name: data.name },

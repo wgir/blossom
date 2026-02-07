@@ -38,5 +38,9 @@ export const typeDefs = `#graphql
   type Query {
     characters(filter: CharacterFilters): [Character]
     character(id: Int!): Character
+    locations: [Location]
+    location(id: Int!): Location
+    episodes: [Episode]
+    episode(id: Int!): Episode
   }
 `;
