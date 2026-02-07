@@ -40,6 +40,8 @@ const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
         setTempFilters(prev => ({ ...prev, [key]: value }));
     };
 
+    const hasActiveFilters = !!(tempFilters.status || tempFilters.species || tempFilters.name);
+
     return (
         <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl p-6 w-full animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="space-y-6">
@@ -71,7 +73,12 @@ const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
 
             <button
                 onClick={handleApply}
-                className="w-full mt-8 bg-gray-100 hover:bg-primary-light text-gray-400 hover:text-primary font-bold py-4 rounded-2xl transition-all"
+                className={cn(
+                    "w-full mt-8 font-bold py-4 rounded-2xl transition-all",
+                    hasActiveFilters
+                        ? "bg-primary text-white shadow-lg shadow-primary/20 hover:opacity-90"
+                        : "bg-gray-100 hover:bg-primary-light text-gray-400 hover:text-primary"
+                )}
             >
                 Filter
             </button>
