@@ -11,11 +11,14 @@ import {
     MessageSquare,
     Send,
     User,
-    Loader2
+    Loader2,
+    ArrowLeft
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const CharacterDetail = () => {
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
     const { favorites, toggleFavorite, comments, addComment, softDelete } = useAppContext();
     const [commentText, setCommentText] = useState('');
 
@@ -65,7 +68,15 @@ const CharacterDetail = () => {
     );
 
     return (
-        <div className="max-w-xl mx-auto py-12 px-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="max-w-xl mx-auto py-12 px-6 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+            {/* Mobile Back Button */}
+            <button
+                onClick={() => navigate('/')}
+                className="lg:hidden absolute top-6 left-6 p-2 text-primary hover:bg-primary-light rounded-full transition-all"
+            >
+                <ArrowLeft size={24} />
+            </button>
+
             {/* Header */}
             <div className="flex flex-col items-center text-center mb-10">
                 <div className="relative mb-6">
