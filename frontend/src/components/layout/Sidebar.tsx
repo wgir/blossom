@@ -117,16 +117,11 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             )} onClick={onClose} />
 
             <aside className={cn(
-                "fixed inset-y-0 left-0 w-[280px] bg-bg-sidebar border-r border-gray-100 transform transition-transform duration-300 lg:relative lg:translate-x-0 z-50 flex flex-col",
+                "fixed inset-y-0 left-0 w-full lg:w-[280px] bg-bg-sidebar border-r border-gray-100 transform transition-transform duration-300 lg:relative lg:translate-x-0 z-50 flex flex-col",
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="p-6 pb-4">
-                    <div className="flex items-center justify-between mb-6">
-                        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Rick and Morty list</h1>
-                        <button onClick={onClose} className="lg:hidden p-2 text-gray-400">
-                            <X size={24} />
-                        </button>
-                    </div>
+
 
                     <div className="relative mb-6">
                         <div className="flex items-center bg-gray-100/80 rounded-2xl px-4 py-3 border border-transparent focus-within:border-primary-light focus-within:bg-white transition-all shadow-sm">
