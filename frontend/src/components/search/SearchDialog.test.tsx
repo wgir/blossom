@@ -5,13 +5,11 @@ import { describe, it, expect, vi } from 'vitest';
 
 describe('SearchDialog', () => {
     const mockFilters: CharacterFilters = { name: '', status: undefined, species: undefined };
-    const mockOnClose = vi.fn();
     const mockOnFilter = vi.fn();
 
     it('renders filter options and calls onFilter when Apply is clicked', () => {
         const { getByText } = render(
             <SearchDialog
-                onClose={mockOnClose}
                 onFilter={mockOnFilter}
                 currentFilters={mockFilters}
             />
@@ -23,10 +21,9 @@ describe('SearchDialog', () => {
         const humanButton = getByText('Human');
         fireEvent.click(humanButton);
 
-        const applyButton = getByText('Apply Filters');
-        fireEvent.click(applyButton);
+        const filterButton = getByText('Filter');
+        fireEvent.click(filterButton);
 
         expect(mockOnFilter).toHaveBeenCalledWith(expect.objectContaining({ species: 'Human' }));
-        expect(mockOnClose).toHaveBeenCalled();
     });
 });

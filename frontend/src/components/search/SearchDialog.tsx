@@ -29,6 +29,15 @@ const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
                 { label: 'Human', value: 'Human' },
                 { label: 'Alien', value: 'Alien' }
             ]
+        },
+        {
+            title: 'Gender',
+            key: 'gender',
+            options: [
+                { label: 'All', value: undefined },
+                { label: 'Male', value: 'Male' },
+                { label: 'Female', value: 'Female' }
+            ]
         }
     ];
 
@@ -40,9 +49,11 @@ const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
         setTempFilters(prev => ({ ...prev, [key]: value }));
     };
 
+    //const hasActiveFilters = !!(tempFilters.status || tempFilters.species || tempFilters.name);
+
     return (
-        <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl p-6 w-full animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="space-y-6">
+        <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl p-6 w-full animate-in fade-in slide-in-from-top-4 duration-300 max-h-[70vh] flex flex-col">
+            <div className="space-y-6 overflow-y-auto flex-1 pr-2 custom-scrollbar">
                 {subsections.map(sub => (
                     <div key={sub.title}>
                         <p className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-4">{sub.title}</p>
@@ -69,12 +80,17 @@ const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
                 ))}
             </div>
 
-            <button
-                onClick={handleApply}
-                className="w-full mt-8 bg-gray-100 hover:bg-primary-light text-gray-400 hover:text-primary font-bold py-4 rounded-2xl transition-all"
-            >
-                Filter
-            </button>
+            <div className="mt-6">
+                <button
+                    onClick={handleApply}
+                    className={cn(
+                        "w-full font-bold py-4 rounded-2xl transition-all",
+                        "bg-primary text-white shadow-lg shadow-primary/20 hover:opacity-90"
+                    )}
+                >
+                    Filter
+                </button>
+            </div>
         </div>
     );
 };
