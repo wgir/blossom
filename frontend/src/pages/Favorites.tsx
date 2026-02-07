@@ -7,7 +7,7 @@ import { Loader2, Star } from 'lucide-react';
 
 const Favorites = () => {
     const { favorites } = useAppContext();
-    const { loading, error, data } = useQuery<{ characters: Character[] }>(GET_CHARACTERS);
+    const { loading, data } = useQuery<{ characters: Character[] }>(GET_CHARACTERS);
 
     const favoriteCharacters = data?.characters?.filter((c: Character) => favorites.includes(c.id)) || [];
 

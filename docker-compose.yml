@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=blossom
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d blossom" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass 123456
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgres://root:secret@postgres:5432/blossom
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=123456
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3100:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
