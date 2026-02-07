@@ -3,8 +3,8 @@ import characterService from '../services/character.service';
 import logger from '../utils/logger';
 
 export const initSyncJob = () => {
-    // Run every 12 hours
-    cron.schedule('0 */12 * * *', async () => {
+    // Run every 5 minutes
+    cron.schedule('*/5 * * * *', async () => {
         logger.info('Running scheduled character sync...');
         try {
             await characterService.syncCharacters(15);
@@ -14,5 +14,5 @@ export const initSyncJob = () => {
         }
     });
 
-    logger.info('Character sync job scheduled (every 12 hours)');
+    logger.info('Character sync job scheduled (every 5 minutes)');
 };
