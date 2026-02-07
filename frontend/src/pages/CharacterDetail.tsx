@@ -11,12 +11,7 @@ import {
     ArrowLeft
 } from 'lucide-react';
 
-const DetailField = ({ label, value }: { label: string, value: string }) => (
-    <div className="py-5 border-b border-gray-100 last:border-0">
-        <p className="text-sm font-bold text-gray-900 mb-1">{label}</p>
-        <p className="text-sm text-gray-500 font-medium">{value}</p>
-    </div>
-);
+import { DetailField } from '../components/common/DetailField';
 
 const CharacterDetail = () => {
     const { id } = useParams<{ id: string }>();

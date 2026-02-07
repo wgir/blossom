@@ -25,9 +25,17 @@ export interface Episode {
     episode_code: string;
 }
 
+// Pure API filters (what the backend accepts)
 export interface CharacterFilters {
     name?: string;
-    status?: string;
     species?: string;
     gender?: string;
+    // status is technically supported by API but we use it for "Starred" in UI
+    status?: string;
+}
+
+// UI State for the list view
+export interface CharacterListState {
+    filter: CharacterFilters;
+    view: 'All' | 'Starred' | 'Others';
 }
