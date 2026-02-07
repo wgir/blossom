@@ -1,9 +1,5 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client/react';
-import { GET_CHARACTER_DETAIL } from '../graphql/queries';
-import type { Character } from '../types';
-import { useAppContext } from '../context/AppContext';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useCharacterDetail } from '../hooks/useCharacterDetail';
 import { cn } from '../utils/cn';
 import {
     Heart,
@@ -14,30 +10,30 @@ import {
     Loader2,
     ArrowLeft
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+
+const DetailField = ({ label, value }: { label: string, value: string }) => (
+    <div className="py-5 border-b border-gray-100 last:border-0">
+        <p className="text-sm font-bold text-gray-900 mb-1">{label}</p>
+        <p className="text-sm text-gray-500 font-medium">{value}</p>
+    </div>
+);
 
 const CharacterDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { favorites, toggleFavorite, comments, addComment, softDelete } = useAppContext();
-    const [commentText, setCommentText] = useState('');
 
-    const characterId = parseInt(id || '0');
-    const { loading, error, data } = useQuery<{ character: Character }, { id: number }>(GET_CHARACTER_DETAIL, {
-        variables: { id: characterId },
-        skip: !characterId
-    });
-
-    const isFavorite = favorites.includes(characterId);
-    const characterComments = comments[characterId] || [];
-
-    const handleAddComment = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (commentText.trim()) {
-            addComment(characterId, commentText.trim());
-            setCommentText('');
-        }
-    };
+    const {
+        character,
+        loading,
+        error,
+        isFavorite,
+        characterComments,
+        commentText,
+        setCommentText,
+        handleAddComment,
+        handleDelete,
+        toggleFavorite
+    } = useCharacterDetail(id);
 
     if (!id) return (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
@@ -52,18 +48,9 @@ const CharacterDetail = () => {
         </div>
     );
 
-    if (error || !data?.character) return (
+    if (error || !character) return (
         <div className="flex flex-col items-center justify-center h-full text-red-400">
             <p className="text-lg font-medium">Character not found</p>
-        </div>
-    );
-
-    const { character } = data;
-
-    const DetailField = ({ label, value }: { label: string, value: string }) => (
-        <div className="py-5 border-b border-gray-100 last:border-0">
-            <p className="text-sm font-bold text-gray-900 mb-1">{label}</p>
-            <p className="text-sm text-gray-500 font-medium">{value}</p>
         </div>
     );
 
@@ -78,15 +65,15 @@ const CharacterDetail = () => {
             </button>
 
             {/* Header */}
-            <div className="flex flex-col items-center text-center mb-10">
-                <div className="relative mb-6">
+            <div className="flex items-center space-x-6 mb-10 text-left">
+                <div className="relative">
                     <img
                         src={character.image}
                         alt={character.name}
-                        className="w-24 h-24 rounded-full object-cover shadow-xl border-4 border-white"
+                        className="w-20 h-20 rounded-full object-cover shadow-xl border-4 border-white"
                     />
                     <button
-                        onClick={() => toggleFavorite(characterId)}
+                        onClick={toggleFavorite}
                         className={cn(
                             "absolute bottom-0 right-0 p-1.5 rounded-full shadow-lg border-2 border-white transition-all",
                             isFavorite ? "bg-heart-active text-white scale-110" : "bg-white text-gray-300 hover:text-gray-400"
@@ -113,11 +100,7 @@ const CharacterDetail = () => {
                         Comments
                     </h3>
                     <button
-                        onClick={() => {
-                            if (confirm('Delete this character?')) {
-                                softDelete(characterId);
-                            }
-                        }}
+                        onClick={handleDelete}
                         className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors flex items-center"
                     >
                         <Trash2 size={14} className="mr-1" />

@@ -1,12 +1,11 @@
-import { useState, useMemo } from 'react';
-import { Search, Loader2, Heart, SlidersVertical } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Loader2, SlidersVertical } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useQuery } from '@apollo/client/react';
-import { GET_CHARACTERS } from '../../graphql/queries';
-import { useAppContext } from '../../context/AppContext';
-import type { Character, CharacterFilters as FilterType } from '../../types';
+import { useCharacters } from '../../hooks/useCharacters';
+import type { CharacterFilters as FilterType } from '../../types';
 import { cn } from '../../utils/cn';
 import SearchDialog from '../search/SearchDialog';
+import CharacterItem from '../character/CharacterItem';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -16,99 +15,14 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { favorites, deletedIds, toggleFavorite } = useAppContext();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [filters, setFilters] = useState<FilterType>({ name: '', status: undefined, species: undefined, gender: undefined });
 
-    // Separate GraphQL filters from UI filters
-    const gqlFilters = useMemo(() => ({
-        name: filters.name,
-        species: filters.species,
-        gender: filters.gender
-    }), [filters.name, filters.species, filters.gender]);
-
-    const uiFilter = filters.status; // Repurposed as 'Starred' | 'Others' | undefined
-
-    const { loading, data } = useQuery<{ characters: Character[] }, { filter: FilterType }>(GET_CHARACTERS, {
-        variables: { filter: gqlFilters },
-    });
+    const { loading, sections } = useCharacters(filters);
 
     const activeId = location.pathname.startsWith('/character/')
         ? parseInt(location.pathname.split('/').pop() || '0')
         : null;
-
-    const sections = useMemo(() => {
-        if (!data?.characters) return { starred: [], others: [] };
-
-        let all = data.characters.filter(c => !deletedIds.includes(c.id));
-
-        // Apply local UI filtering
-        if (uiFilter === 'Starred') {
-            all = all.filter(c => favorites.includes(c.id));
-        } else if (uiFilter === 'Others') {
-            all = all.filter(c => !favorites.includes(c.id));
-        }
-
-        return {
-            starred: all.filter(c => favorites.includes(c.id)),
-            others: all.filter(c => !favorites.includes(c.id))
-        };
-    }, [data, favorites, deletedIds, uiFilter]);
-
-    const CharacterItem = ({ character }: { character: Character }) => {
-        const isActive = activeId === character.id;
-        const isFavorite = favorites.includes(character.id);
-
-        return (
-            <div
-                onClick={() => {
-                    navigate(`/character/${character.id}`);
-                    if (window.innerWidth < 1024) onClose();
-                }}
-                className={cn(
-                    "group flex items-center p-3 mx-4 rounded-2xl cursor-pointer transition-all mb-2",
-                    isActive
-                        ? "bg-primary-light shadow-sm"
-                        : "hover:bg-gray-50 bg-white"
-                )}
-            >
-                <div className="relative">
-                    <img
-                        src={character.image}
-                        alt={character.name}
-                        className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
-                    />
-                    <div className={cn(
-                        "absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white",
-                        character.status === 'Alive' ? "bg-green-500" : "bg-gray-400"
-                    )} />
-                </div>
-
-                <div className="ml-3 flex-1 min-w-0">
-                    <p className={cn(
-                        "text-sm font-bold truncate transition-colors",
-                        isActive ? "text-primary" : "text-gray-900"
-                    )}>
-                        {character.name}
-                    </p>
-                    <p className="text-xs text-secondary truncate">{character.species}</p>
-                </div>
-
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(character.id);
-                    }}
-                    className={cn(
-                        "p-1.5 transition-all text-gray-200 group-hover:block",
-                        isFavorite ? "text-heart-active block" : "hidden"
-                    )}
-                >
-                    <Heart size={18} fill={isFavorite ? "currentColor" : "none"} strokeWidth={isFavorite ? 0 : 2} className={isFavorite ? "text-heart-active" : "text-gray-300"} />
-                </button>
-            </div>
-        );
-    };
 
     return (
         <>
@@ -122,8 +36,6 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="p-6 pb-4">
-
-
                     <div className="relative mb-6">
                         <div className="flex items-center bg-gray-100/80 rounded-2xl px-4 py-3 border border-transparent focus-within:border-primary-light focus-within:bg-white transition-all shadow-sm">
                             <Search className="text-gray-400" size={18} />
@@ -156,7 +68,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
-                    {loading && !data && (
+                    {loading && !sections.starred.length && !sections.others.length && (
                         <div className="flex justify-center py-10">
                             <Loader2 className="animate-spin text-gray-300" size={32} />
                         </div>
@@ -167,7 +79,17 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                             <h3 className="px-7 text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-4">
                                 Starred Characters ({sections.starred.length})
                             </h3>
-                            {sections.starred.map(c => <CharacterItem key={c.id} character={c} />)}
+                            {sections.starred.map(c => (
+                                <CharacterItem
+                                    key={c.id}
+                                    character={c}
+                                    isActive={activeId === c.id}
+                                    onClick={() => {
+                                        navigate(`/character/${c.id}`);
+                                        if (window.innerWidth < 1024) onClose();
+                                    }}
+                                />
+                            ))}
                         </div>
                     )}
 
@@ -175,7 +97,17 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                         <h3 className="px-7 text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-4">
                             Characters ({sections.others.length})
                         </h3>
-                        {sections.others.map(c => <CharacterItem key={c.id} character={c} />)}
+                        {sections.others.map(c => (
+                            <CharacterItem
+                                key={c.id}
+                                character={c}
+                                isActive={activeId === c.id}
+                                onClick={() => {
+                                    navigate(`/character/${c.id}`);
+                                    if (window.innerWidth < 1024) onClose();
+                                }}
+                            />
+                        ))}
                         {!loading && sections.others.length === 0 && sections.starred.length === 0 && (
                             <p className="text-center text-xs text-gray-400 py-10">No characters found</p>
                         )}
