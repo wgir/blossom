@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, X, Loader2, Heart, Filter } from 'lucide-react';
+import { Search, X, Loader2, Heart, SlidersVertical } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/client/react';
 import { GET_CHARACTERS } from '../../graphql/queries';
@@ -145,7 +145,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                                     isFilterOpen ? "bg-primary text-white" : "text-gray-400 hover:text-gray-600"
                                 )}
                             >
-                                <Filter size={16} />
+                                <SlidersVertical size={16} />
                             </button>
                         </div>
                         {isFilterOpen && (
