@@ -7,7 +7,7 @@ interface AppContextType {
     addComment: (id: number, comment: string) => void;
     deletedIds: number[];
     softDelete: (id: number) => void;
-    restoreCharacter: (id: number) => void;
+
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -57,9 +57,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         setDeletedIds(prev => [...prev, id]);
     };
 
-    const restoreCharacter = (id: number) => {
-        setDeletedIds(prev => prev.filter(d => d !== id));
-    };
+
 
     return (
         <AppContext.Provider value={{
@@ -69,7 +67,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             addComment,
             deletedIds,
             softDelete,
-            restoreCharacter
+
         }}>
             {children}
         </AppContext.Provider>
