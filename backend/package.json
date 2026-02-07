@@ -8,6 +8,7 @@
     "build": "rimraf dist && tsc",
     "test": "jest",
     "seed": "ts-node src/scripts/seed.ts",
+    "seed:prod": "node dist/scripts/seed.js",
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo"
   },
