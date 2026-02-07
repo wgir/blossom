@@ -18,13 +18,14 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const location = useLocation();
     const { favorites, deletedIds, toggleFavorite } = useAppContext();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [filters, setFilters] = useState<FilterType>({ name: '', status: undefined, species: undefined });
+    const [filters, setFilters] = useState<FilterType>({ name: '', status: undefined, species: undefined, gender: undefined });
 
     // Separate GraphQL filters from UI filters
     const gqlFilters = useMemo(() => ({
         name: filters.name,
-        species: filters.species
-    }), [filters.name, filters.species]);
+        species: filters.species,
+        gender: filters.gender
+    }), [filters.name, filters.species, filters.gender]);
 
     const uiFilter = filters.status; // Repurposed as 'Starred' | 'Others' | undefined
 
