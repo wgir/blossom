@@ -4,7 +4,6 @@ import { MockedProvider } from '@apollo/client/testing/react';
 import CharacterCard from './CharacterCard';
 import type { Character } from '../../types';
 import { describe, it, expect, vi } from 'vitest';
-import * as AppContextModule from '../../context/AppContext';
 
 vi.mock('../../context/AppContext', () => ({
     useAppContext: () => ({

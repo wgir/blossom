@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, X, Loader2, Heart, SlidersVertical } from 'lucide-react';
+import { Search, Loader2, Heart, SlidersVertical } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/client/react';
 import { GET_CHARACTERS } from '../../graphql/queries';

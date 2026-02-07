@@ -5,9 +5,10 @@ import { cn } from '../../utils/cn';
 interface SearchDialogProps {
     onFilter: (filters: FilterType) => void;
     currentFilters: FilterType;
+    onClose?: () => void;
 }
 
-const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
+const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) => {
     const [tempFilters, setTempFilters] = useState<FilterType>(currentFilters);
 
     const subsections = [
@@ -43,6 +44,7 @@ const SearchDialog = ({ onFilter, currentFilters }: SearchDialogProps) => {
 
     const handleApply = () => {
         onFilter(tempFilters);
+        onClose?.();
     };
 
     const updateFilter = (key: keyof FilterType, value: string | undefined) => {
