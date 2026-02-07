@@ -1,23 +1,23 @@
 import { useState } from 'react';
-import type { CharacterFilters as FilterType } from '../../types';
+import type { CharacterListState, CharacterFilters } from '../../types';
 import { cn } from '../../utils/cn';
 
 interface SearchDialogProps {
-    onFilter: (filters: FilterType) => void;
-    currentFilters: FilterType;
+    onFilter: (state: CharacterListState) => void;
+    currentState: CharacterListState;
     onClose?: () => void;
 }
 
-const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) => {
-    const [tempFilters, setTempFilters] = useState<FilterType>(currentFilters);
+const SearchDialog = ({ onFilter, currentState, onClose }: SearchDialogProps) => {
+    const [tempState, setTempState] = useState<CharacterListState>(currentState);
 
     const subsections = [
         {
-            title: 'Character',
-            key: 'status', // We are repurposing this for the UI selection if needed, 
-            // or adding a new field. Let's keep it simple for the UI.
+            title: 'Filter View',
+            key: 'view',
+            isViewState: true,
             options: [
-                { label: 'All', value: undefined },
+                { label: 'All', value: 'All' },
                 { label: 'Starred', value: 'Starred' },
                 { label: 'Others', value: 'Others' }
             ]
@@ -25,6 +25,7 @@ const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) 
         {
             title: 'Specie',
             key: 'species',
+            isViewState: false,
             options: [
                 { label: 'All', value: undefined },
                 { label: 'Human', value: 'Human' },
@@ -34,6 +35,7 @@ const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) 
         {
             title: 'Gender',
             key: 'gender',
+            isViewState: false,
             options: [
                 { label: 'All', value: undefined },
                 { label: 'Male', value: 'Male' },
@@ -43,15 +45,20 @@ const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) 
     ];
 
     const handleApply = () => {
-        onFilter(tempFilters);
+        onFilter(tempState);
         onClose?.();
     };
 
-    const updateFilter = (key: keyof FilterType, value: string | undefined) => {
-        setTempFilters(prev => ({ ...prev, [key]: value }));
+    const updateFilter = (key: string, value: string | undefined, isView: boolean) => {
+        if (isView) {
+            setTempState(prev => ({ ...prev, view: value as any }));
+        } else {
+            setTempState(prev => ({
+                ...prev,
+                filter: { ...prev.filter, [key]: value }
+            }));
+        }
     };
-
-    //const hasActiveFilters = !!(tempFilters.status || tempFilters.species || tempFilters.name);
 
     return (
         <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl p-6 w-full animate-in fade-in slide-in-from-top-4 duration-300 max-h-[70vh] flex flex-col">
@@ -61,11 +68,14 @@ const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) 
                         <p className="text-xs font-semibold text-gray-300 uppercase tracking-widest mb-4">{sub.title}</p>
                         <div className="flex flex-wrap gap-2">
                             {sub.options.map(opt => {
-                                const isSelected = tempFilters[sub.key as keyof FilterType] === opt.value;
+                                const isSelected = sub.isViewState
+                                    ? tempState.view === opt.value
+                                    : tempState.filter[sub.key as keyof CharacterFilters] === opt.value;
+
                                 return (
                                     <button
                                         key={opt.label}
-                                        onClick={() => updateFilter(sub.key as keyof FilterType, opt.value)}
+                                        onClick={() => updateFilter(sub.key, opt.value, !!sub.isViewState)}
                                         className={cn(
                                             "px-5 py-2 rounded-xl text-sm font-medium transition-all",
                                             isSelected
@@ -90,7 +100,7 @@ const SearchDialog = ({ onFilter, currentFilters, onClose }: SearchDialogProps) 
                         "bg-primary text-white shadow-lg shadow-primary/20 hover:opacity-90"
                     )}
                 >
-                    Filter
+                    Apply Filters
                 </button>
             </div>
         </div>

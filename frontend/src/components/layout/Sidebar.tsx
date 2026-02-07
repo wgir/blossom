@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Search, Loader2, SlidersVertical } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCharacters } from '../../hooks/useCharacters';
-import type { CharacterFilters as FilterType } from '../../types';
+import type { CharacterListState } from '../../types';
 import { cn } from '../../utils/cn';
 import SearchDialog from '../search/SearchDialog';
 import CharacterItem from '../character/CharacterItem';
@@ -16,9 +16,14 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [filters, setFilters] = useState<FilterType>({ name: '', status: undefined, species: undefined, gender: undefined });
 
-    const { loading, sections } = useCharacters(filters);
+    // Initialize with the new State structure
+    const [state, setState] = useState<CharacterListState>({
+        filter: { name: '' },
+        view: 'All'
+    });
+
+    const { loading, sections } = useCharacters(state);
 
     const activeId = location.pathname.startsWith('/character/')
         ? parseInt(location.pathname.split('/').pop() || '0')
@@ -42,8 +47,11 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                             <input
                                 type="text"
                                 placeholder="Search or filter results"
-                                value={filters.name}
-                                onChange={(e) => setFilters(prev => ({ ...prev, name: e.target.value }))}
+                                value={state.filter.name || ''}
+                                onChange={(e) => setState(prev => ({
+                                    ...prev,
+                                    filter: { ...prev.filter, name: e.target.value }
+                                }))}
                                 className="flex-1 bg-transparent ml-3 text-sm focus:outline-none text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
                             />
                             <button
@@ -59,8 +67,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                         {isFilterOpen && (
                             <div className="absolute top-full left-0 right-0 z-10 mt-2">
                                 <SearchDialog
-                                    currentFilters={filters}
-                                    onFilter={(f) => { setFilters(f); setIsFilterOpen(false); }}
+                                    currentState={state}
+                                    onFilter={(newState) => { setState(newState); setIsFilterOpen(false); }}
                                 />
                             </div>
                         )}
@@ -119,4 +127,3 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 };
 
 export default Sidebar;
-

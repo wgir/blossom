@@ -9,10 +9,22 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     const isDetailPage = location.pathname.startsWith('/character/');
 
     useEffect(() => {
+        const handleResize = () => {
+            // If screen becomes large, ensure sidebar logic resets if needed, or close it if it was open in mobile mode unwantedly.
+            // Actually, for this design, we just want to ensure that if we go to desktop, the "drawer" state is reset.
+            if (window.innerWidth >= 1024) {
+                setIsSidebarOpen(false); // Reset mobile state when going to desktop
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+
         // Automatically open sidebar on mobile when navigating to the list view
         if (!isDetailPage && window.innerWidth < 1024) {
             setIsSidebarOpen(true);
         }
+
+        return () => window.removeEventListener('resize', handleResize);
     }, [isDetailPage]);
 
     return (
