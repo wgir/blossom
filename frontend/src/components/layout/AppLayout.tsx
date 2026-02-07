@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
-import { Menu, ArrowLeft } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
-    const navigate = useNavigate();
 
     const isDetailPage = location.pathname.startsWith('/character/');
 
-    React.useEffect(() => {
+    useEffect(() => {
         // Automatically open sidebar on mobile when navigating to the list view
         if (!isDetailPage && window.innerWidth < 1024) {
             setIsSidebarOpen(true);

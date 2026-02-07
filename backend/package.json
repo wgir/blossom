@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.ts",
     "build": "rimraf dist && tsc",
     "test": "jest",
-    "seed": "ts-node src/scripts/seed.ts",
+    "seed": "node dist/scripts/seed.js",
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo"
   },
@@ -27,6 +27,7 @@
     "pg-hstore": "^2.3.4",
     "redis": "^4.6.12",
     "sequelize": "^6.37.0",
+    "sequelize-cli": "^6.6.2",
     "winston": "^3.11.0"
   },
   "devDependencies": {
@@ -39,7 +40,6 @@
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "rimraf": "^5.0.5",
-    "sequelize-cli": "^6.6.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

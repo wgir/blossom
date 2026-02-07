@@ -1,8 +1,9 @@
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 
 const httpLink = new HttpLink({
-    uri: 'http://localhost:3000/graphql',
+    uri: '/graphql',
 });
+
 
 export const client = new ApolloClient({
     link: httpLink,
@@ -13,7 +14,7 @@ export const client = new ApolloClient({
                     characters: {
                         // Since the backend doesn't support pagination in the schema shown, 
                         // we'll keep it simple. If we add pagination, we'd use merge functions here.
-                        merge(existing, incoming) {
+                        merge(_existing, incoming) {
                             return incoming;
                         },
                     },
