@@ -7,6 +7,7 @@ import redisClient, { connectRedis } from '../config/redis';
 import logger from '../utils/logger';
 
 const CACHE_TTL = 3600 * 8; // 8 hours (between 6-12 requirement)
+const CACHE_KEY_CHARACTERS_PATTERN = 'characters:*';
 
 export class CharacterService {
     async searchCharacters(filters: CharacterFilters) {
@@ -49,7 +50,7 @@ export class CharacterService {
         // Invalidate all character caches
         try {
             await connectRedis();
-            const keys = await redisClient.keys('characters:*');
+            const keys = await redisClient.keys(CACHE_KEY_CHARACTERS_PATTERN);
             if (keys.length > 0) {
                 await redisClient.del(keys);
             }
@@ -119,6 +120,22 @@ export class CharacterService {
 
         if (episodeIds.length > 0) {
             await (character as any).setEpisodes(episodeIds);
+        }
+
+        return character;
+    }
+    async updateCharacterStatus(id: number, active: boolean) {
+        const character = await characterRepository.update(id, { active } as any);
+
+        try {
+            if (redisClient.isOpen) {
+                const keys = await redisClient.keys(CACHE_KEY_CHARACTERS_PATTERN);
+                if (keys.length > 0) {
+                    await redisClient.del(keys);
+                }
+            }
+        } catch (error) {
+            logger.error('Error clearing cache after status update', error);
         }
 
         return character;
