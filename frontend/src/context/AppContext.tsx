@@ -67,7 +67,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             addComment,
             deletedIds,
             softDelete,
-
         }}>
             {children}
         </AppContext.Provider>
