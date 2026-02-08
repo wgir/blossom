@@ -8,6 +8,7 @@ export const GET_CHARACTERS = gql`
       status
       species
       image
+      active
       gender
     }
   }
@@ -23,6 +24,7 @@ export const GET_CHARACTER_DETAIL = gql`
       type
       gender
       image
+      active
       origin {
         name
       }

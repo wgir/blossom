@@ -17,6 +17,7 @@ export const typeDefs = `#graphql
     id: Int
     name: String
     status: String
+    active: Boolean
     species: String
     type: String
     gender: String
@@ -30,6 +31,7 @@ export const typeDefs = `#graphql
   input CharacterFilters {
     name: String
     status: String
+    active: Boolean
     species: String
     gender: String
     origin: String
@@ -42,5 +44,9 @@ export const typeDefs = `#graphql
     location(id: Int!): Location
     episodes: [Episode]
     episode(id: Int!): Episode
+  }
+
+  type Mutation {
+    updateCharacterStatus(characterId: Int!, status: Boolean!): Character
   }
 `;

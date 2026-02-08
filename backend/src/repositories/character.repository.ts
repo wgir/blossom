@@ -5,6 +5,7 @@ import { MonitorPerformance } from '../utils/performance.decorator';
 export interface CharacterFilters {
     name?: string;
     status?: string;
+    active?: boolean;
     species?: string;
     gender?: string;
     origin?: string;
@@ -16,6 +17,7 @@ export class CharacterRepository {
         const where: any = {};
         if (filters.name) where.name = { [Op.iLike]: `%${filters.name}%` };
         if (filters.status) where.status = filters.status;
+        if (filters.active !== undefined) where.active = filters.active;
         if (filters.species) where.species = { [Op.iLike]: `%${filters.species}%` };
         if (filters.gender) where.gender = filters.gender;
 
@@ -56,6 +58,12 @@ export class CharacterRepository {
         });
         if (!character) throw new Error(`Failed to retrieve character with id ${data.id} after upsert`);
         return character;
+    }
+
+    async update(id: number, data: Partial<Character>): Promise<Character> {
+        const character = await this.findById(id);
+        if (!character) throw new Error(`Character with id ${id} not found`);
+        return character.update(data);
     }
 }
 

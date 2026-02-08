@@ -6,6 +6,7 @@ class Character extends Model {
     public id!: number;
     public name!: string;
     public status!: string;
+    public active!: boolean;
     public species!: string;
     public type!: string;
     public gender!: string;
@@ -27,6 +28,11 @@ Character.init(
         },
         status: {
             type: DataTypes.STRING(50),
+        },
+        active: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+            allowNull: false,
         },
         species: {
             type: DataTypes.STRING(100),
