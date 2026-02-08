@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 import type { Character, CharacterFilters, CharacterListState } from '../types';
 
 export const useCharacters = (state: CharacterListState) => {
-    const { favorites, deletedIds } = useAppContext();
+    const { favorites } = useAppContext();
 
     // Memoize API filters to prevent unnecessary re-fetches
     const gqlFilters = useMemo(() => ({
@@ -23,8 +23,8 @@ export const useCharacters = (state: CharacterListState) => {
     const sections = useMemo(() => {
         if (!data?.characters) return { starred: [], others: [] };
 
-        // 1. Filter out deleted characters
-        let all = data.characters.filter(c => !deletedIds.includes(c.id));
+        // 1. Filter out deleted/inactive characters
+        let all = data.characters.filter(c => c.active !== false);
 
         // 2. Apply "View" filter (Starred vs Others)
         if (state.view === 'Starred') {
@@ -38,7 +38,7 @@ export const useCharacters = (state: CharacterListState) => {
             starred: all.filter(c => favorites.includes(c.id)),
             others: all.filter(c => !favorites.includes(c.id))
         };
-    }, [data, favorites, deletedIds, state.view]);
+    }, [data, favorites, state.view]);
 
     return {
         loading,

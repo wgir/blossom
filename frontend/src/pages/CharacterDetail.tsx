@@ -28,7 +28,9 @@ const CharacterDetail = () => {
         handleAddComment,
         handleDelete,
         toggleFavorite
-    } = useCharacterDetail(id);
+    } = useCharacterDetail(id, {
+        onDeleteSuccess: () => navigate('/')
+    });
 
     if (!id) return (
         <div className="flex flex-col items-center justify-center h-full text-gray-300">
