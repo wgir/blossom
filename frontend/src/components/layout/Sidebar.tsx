@@ -41,9 +41,13 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                 isOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="p-6 pb-4">
+                    <div className="mb-6">
+                        <h1 className="text-xl font-bold text-foreground">Rick and Morty list</h1>
+                    </div>
+
                     <div className="relative mb-6">
-                        <div className="flex items-center bg-gray-100/80 rounded-2xl px-4 py-3 border border-transparent focus-within:border-primary-light focus-within:bg-white transition-all shadow-sm">
-                            <Search className="text-gray-400" size={18} />
+                        <div className="flex w-full sm:w-[250px] md:w-[250px] lg:w-[250px] items-center bg-gray-100/80 rounded-2xl py-3 border border-transparent focus-within:border-primary-light focus-within:bg-white transition-all shadow-sm">
+                            <Search className="text-gray-400" size={20} />
                             <input
                                 type="text"
                                 placeholder="Search or filter results"
@@ -57,7 +61,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                             <button
                                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                                 className={cn(
-                                    "p-1.5 rounded-lg transition-colors ml-1",
+                                    "bg-primary-light p-1.5 rounded-lg transition-colors ml-1",
                                     isFilterOpen ? "bg-primary text-white" : "text-gray-400 hover:text-gray-600"
                                 )}
                             >
