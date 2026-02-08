@@ -5,9 +5,8 @@ interface AppContextType {
     toggleFavorite: (id: number) => void;
     comments: Record<number, string[]>;
     addComment: (id: number, comment: string) => void;
-    deletedIds: number[];
-    softDelete: (id: number) => void;
-    restoreCharacter: (id: number) => void;
+
+
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -23,10 +22,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         return saved ? JSON.parse(saved) : {};
     });
 
-    const [deletedIds, setDeletedIds] = useState<number[]>(() => {
-        const saved = localStorage.getItem('blossom_deleted');
-        return saved ? JSON.parse(saved) : [];
-    });
+
 
     useEffect(() => {
         localStorage.setItem('blossom_favorites', JSON.stringify(favorites));
@@ -36,9 +32,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('blossom_comments', JSON.stringify(comments));
     }, [comments]);
 
-    useEffect(() => {
-        localStorage.setItem('blossom_deleted', JSON.stringify(deletedIds));
-    }, [deletedIds]);
+
 
     const toggleFavorite = (id: number) => {
         setFavorites(prev =>
@@ -53,13 +47,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }));
     };
 
-    const softDelete = (id: number) => {
-        setDeletedIds(prev => [...prev, id]);
-    };
 
-    const restoreCharacter = (id: number) => {
-        setDeletedIds(prev => prev.filter(d => d !== id));
-    };
+
+
 
     return (
         <AppContext.Provider value={{
@@ -67,9 +57,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             toggleFavorite,
             comments,
             addComment,
-            deletedIds,
-            softDelete,
-            restoreCharacter
+
         }}>
             {children}
         </AppContext.Provider>

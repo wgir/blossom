@@ -24,6 +24,11 @@ export const resolvers = {
             return episodeRepository.findById(id);
         },
     },
+    Mutation: {
+        updateCharacterStatus: async (_: any, { characterId, status }: { characterId: number, status: boolean }) => {
+            return characterService.updateCharacterStatus(characterId, status);
+        },
+    },
     Character: {
         origin: (character: any) => character.origin,
         location: (character: any) => character.location,

@@ -6,6 +6,7 @@ export interface Character {
     type: string;
     gender: string;
     image: string;
+    active: boolean;
     origin?: Location;
     location?: Location;
     episodes?: Episode[];
