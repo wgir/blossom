@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Loader2, SlidersVertical } from 'lucide-react';
+import { Search, Loader2, SlidersVertical, ArrowDownAZ, ArrowUpZA } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCharacters } from '../../hooks/useCharacters';
 import type { CharacterListState } from '../../types';
@@ -20,7 +20,8 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     // Initialize with the new State structure
     const [state, setState] = useState<CharacterListState>({
         filter: { name: '' },
-        view: 'All'
+        view: 'All',
+        sortOrder: 'asc'
     });
 
     const { loading, sections } = useCharacters(state);
@@ -58,6 +59,16 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                                 }))}
                                 className="flex-1 bg-transparent ml-3 text-sm focus:outline-none text-gray-900 font-medium placeholder:text-gray-400 placeholder:font-normal"
                             />
+                            <button
+                                onClick={() => setState(prev => ({
+                                    ...prev,
+                                    sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc'
+                                }))}
+                                className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg transition-colors ml-1"
+                                title={state.sortOrder === 'asc' ? "Sort Descending" : "Sort Ascending"}
+                            >
+                                {state.sortOrder === 'asc' ? <ArrowDownAZ size={18} /> : <ArrowUpZA size={18} />}
+                            </button>
                             <button
                                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                                 className={cn(

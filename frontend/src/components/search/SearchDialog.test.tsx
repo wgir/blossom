@@ -7,7 +7,8 @@ import '@testing-library/jest-dom';
 describe('SearchDialog', () => {
     const mockState: CharacterListState = {
         filter: { name: '', species: undefined, gender: undefined },
-        view: 'All'
+        view: 'All',
+        sortOrder: 'asc'
     };
     const mockOnFilter = vi.fn();
 
