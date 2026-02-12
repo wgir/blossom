@@ -33,12 +33,18 @@ export const useCharacters = (state: CharacterListState) => {
             all = all.filter(c => !favorites.includes(c.id));
         }
 
-        // 3. Return categorized sections
+        // 3. Apply sorting
+        const sorted = all.sort((a, b) => {
+            const comparison = a.name.localeCompare(b.name);
+            return state.sortOrder === 'asc' ? comparison : -comparison;
+        });
+
+        // 4. Return categorized sections
         return {
-            starred: all.filter(c => favorites.includes(c.id)),
-            others: all.filter(c => !favorites.includes(c.id))
+            starred: sorted.filter(c => favorites.includes(c.id)),
+            others: sorted.filter(c => !favorites.includes(c.id))
         };
-    }, [data, favorites, state.view]);
+    }, [data, favorites, state.view, state.sortOrder]);
 
     return {
         loading,
