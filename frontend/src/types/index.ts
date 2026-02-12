@@ -39,4 +39,5 @@ export interface CharacterFilters {
 export interface CharacterListState {
     filter: CharacterFilters;
     view: 'All' | 'Starred' | 'Others';
+    sortOrder: 'asc' | 'desc';
 }
