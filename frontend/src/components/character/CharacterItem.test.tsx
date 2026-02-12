@@ -20,13 +20,8 @@ const mockCharacter: Character = {
     species: 'Human',
     type: '',
     gender: 'Male',
-    // origin: { name: 'Earth', url: '' }, // Removed invalid properties based on types/index.ts
-    // location: { name: 'Earth', url: '' },
     image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-    // episode: [],
-    // url: '',
-    // created: '2017-11-04T18:48:46.250Z' 
-    active: true // Added required property from types/index.ts
+    active: true
 };
 
 describe('CharacterItem', () => {
